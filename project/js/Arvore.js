@@ -3,6 +3,15 @@ class Arvore {
         this.raiz = null;
     }
 
+    inserir(valorPai, valor, posicao) {
+        const noPai = this.buscar(this.raiz, valorPai);
+        if(noPai !== null) {
+            const novoNo = new No(valor);
+            return noPai.adicionarFilho(novoNo, posicao);
+        } return false;
+    }
+
+    // Inicia com nó raiz como parâmetro
     buscar(no, valor) {
         if (no === null) return null;
 
