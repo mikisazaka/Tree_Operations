@@ -1,12 +1,36 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visualizador de Árvores</title>
     <link rel="stylesheet" href="style.css">
-    <title>Operações em Árvore</title>
+    <script type="module" src="No.js"></script>
+    <script type="module" src="Arvore.js"></script>
+    <script type="module" src="Main.js"></script>
 </head>
+
 <body>
-    
+    <header>
+        <h1>Visualizador de Estruturas</h1>
+        <nav>
+            <a href="#" id="menu-arvores">Árvores</a>
+            <a href="#" id="menu-grafos">Grafos</a>
+        </nav>
+    </header>
+
+    <div class="inputs-container">
+        <input type="number" id="valorInserir" placeholder="Valor para inserir">
+        <input type="text" id="localInsercao" placeholder="Local (pai)">
+        <button id="btnInserir">Inserir</button>
+
+        <input type="number" id="valorRemover" placeholder="Valor para remover">
+        <button id="btnRemover">Remover</button>
+    </div>
+
+    <div class="tree-container" id="treeArea">
+        (A árvore será exibida aqui)
+    </div>
 </body>
+
 </html>

@@ -1,0 +1,85 @@
+/* Estilos globais */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f6f8ff;
+}
+
+/* Cabeçalho */
+header {
+    background-color: #a58cf4;
+    color: white;
+    padding: 15px 30px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+header h1 {
+    font-size: 24px;
+    margin: 0;
+    font-weight: bold;
+    color: #ffffff;
+    letter-spacing: 1px;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    margin: 0 10px;
+    font-weight: bold;
+    font-size: 16px;
+    transition: color 0.2s ease;
+}
+
+nav a:hover {
+    color: #d9c7ff;
+}
+
+/* Container de inputs */
+.inputs-container {
+    background-color: #ede7ff;
+    padding: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 2px solid #c9bff7;
+}
+
+input {
+    padding: 6px;
+    border: 1px solid #b5aef5;
+    border-radius: 6px;
+    width: 130px;
+    font-size: 14px;
+}
+
+button {
+    padding: 6px 12px;
+    background-color: #8ecae6;
+    color: #2b2b2b;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 14px;
+    transition: background 0.2s ease;
+}
+
+button:hover {
+    background-color: #a0d3ef;
+}
+
+/* Área da árvore */
+.tree-container {
+    width: 100%;
+    height: calc(100vh - 120px);
+    background-color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #777;
+    font-size: 20px;
+}
