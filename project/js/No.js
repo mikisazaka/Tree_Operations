@@ -1,13 +1,20 @@
-class No {
+export class No {
     constructor(valor) {
         this.valor = valor;
-        this.filhos = [];
+        this.filhos = [null, null, null];
     }
 
-    adicionarFilho(no, posicao) {
-        if(this.filhos.length < 3 && posicao >= 0 && posicao <= this.filhos.length) {
-            this.filhos.splice(posicao, 0, no);
-            return true
-        } return false;
+adicionarFilho(no, posicao) {
+        const indice = posicao - 1;
+
+        if (indice < 0 || indice > 2) {
+            return false;
+        }
+        if (this.filhos[indice] === null) {
+            this.filhos[indice] = no;
+            return true;
+        }
+
+        return false;
     }
 }
