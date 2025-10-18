@@ -1,4 +1,6 @@
-class Arvore {
+import { No } from "./No.js";
+
+export class Arvore {
     constructor() {
         this.raiz = null;
         this.passos = [];
@@ -32,7 +34,7 @@ class Arvore {
         }
 
         this.passos.push(`Visitando nó ${no.valor}`);
-        
+
         if (no.valor == valor) {
             this.passos.push(`Nó ${no.valor} encontrado!`);
             return no;
@@ -51,53 +53,80 @@ class Arvore {
     // Nó pai é substituído pelo nó filho da esquerda
     // Recebe como parâmetro o nó pai e o valor do nó a ser removido
     remover(valor, no) {
-        this.passos = [];
+        // Reiniciamos os passos no início da chamada principal
+        if (no === this.raiz) {
+            this.passos = [];
+        }
 
-        if (no == null) {
+        if (no === null) {
             this.passos.push("Árvore vazia!");
             return false;
         }
 
+        // Caso 1: Removendo a raiz
         if (no === this.raiz && no.valor === valor) {
             this.passos.push(`Removendo a raiz ${valor}`);
+            // Encontra o primeiro filho válido para ser a nova raiz
+            const novaRaiz = no.filhos.find(f => f !== null) || null;
 
-            if (no.filhos.length === 0) {
+            if (novaRaiz === null) {
                 this.raiz = null;
                 this.passos.push(`Árvore novamente vazia`);
             } else {
-                const novoRaiz = no.filhos[0];
-                novoRaiz.filhos.push(...no.filhos.slice(1));
-                this.raiz = novoRaiz;
-                this.passos.push(`Novo nó raiz é ${novoRaiz.valor}. Os demais filhos continuam como filhos da nova raiz`);
+                // Remove a nova raiz da lista de filhos para não ser adicionada a si mesma
+                const outrosFilhos = no.filhos.filter(f => f !== novaRaiz && f !== null);
+                // Adiciona os filhos restantes aos filhos da nova raiz (encontrando slots livres)
+                outrosFilhos.forEach(outroFilho => {
+                    for (let i = 1; i <= 3; i++) {
+                        if (novaRaiz.adicionarFilho(outroFilho, i)) break;
+                    }
+                });
+                this.raiz = novaRaiz;
+                this.passos.push(`Novo nó raiz é ${novaRaiz.valor}. Os demais filhos foram realocados.`);
             }
             return true;
         }
 
+        // Caso 2: Buscando o nó para remover nos filhos
         for (let i = 0; i < no.filhos.length; i++) {
             const filho = no.filhos[i];
-            this.passos.push(`Visitando o nó filho ${filho.valor}`);
 
-            if (filho.valor === valor) {
-                this.passos.push(`Removendo nó ${valor}`);
+            // --- CORREÇÃO IMPORTANTE AQUI ---
+            // Só processa se o filho não for null
+            if (filho) {
+                this.passos.push(`Visitando o nó filho ${filho.valor} do pai ${no.valor}`);
 
-                if (filho.filhos.length === 0) {
-                    no.filhos.splice(i, 1);
-                    this.passos.push(`Nó folha ${valor} removido`);
-                } else {
-                    const novoNo = filho.filhos[0];
-                    novoNo.filhos.push(...filho.filhos.slice(1));
-                    no.filhos[i] = novoNo;
-                    this.passos.push(`Nó ${valor} substituído por ${novoNo.valor}. Os demais filhos continuam como filhos do novo nó pai`);
+                // Se o filho atual é o que queremos remover
+                if (filho.valor === valor) {
+                    this.passos.push(`Removendo nó ${valor}`);
+                    const filhosDoRemovido = filho.filhos.filter(f => f !== null);
+
+                    // Substitui o filho removido pelo primeiro de seus próprios filhos (se houver)
+                    const substituto = filhosDoRemovido.length > 0 ? filhosDoRemovido[0] : null;
+                    no.filhos[i] = substituto;
+
+                    if (substituto) {
+                        const outrosFilhos = filhosDoRemovido.slice(1);
+                        outrosFilhos.forEach(outroFilho => {
+                            for (let j = 1; j <= 3; j++) {
+                                if (substituto.adicionarFilho(outroFilho, j)) break;
+                            }
+                        });
+                        this.passos.push(`Nó ${valor} substituído por ${substituto.valor}. Os demais filhos foram realocados.`);
+                    } else {
+                        no.filhos[i] = null; // Se não tinha filhos, apenas remove
+                        this.passos.push(`Nó folha ${valor} removido`);
+                    }
+                    return true;
                 }
-                return true;
-            }
 
-            if (this.remover(valor, filho)) {
-                return true;
+                // Chamada recursiva para os níveis mais baixos
+                if (this.remover(valor, filho)) {
+                    return true;
+                }
             }
         }
 
-        this.passos.push(`Nó ${valor} não encontrado!`);
         return false;
     }
 }

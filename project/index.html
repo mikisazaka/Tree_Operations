@@ -2,35 +2,53 @@
 <html lang="pt-BR">
 
 <head>
-    <meta charset="UTF-8">
-    <title>Visualizador de Árvores</title>
-    <link rel="stylesheet" href="style.css">
-    <script type="module" src="No.js"></script>
-    <script type="module" src="Arvore.js"></script>
-    <script type="module" src="Main.js"></script>
+
+  <meta charset="UTF-8" />
+  <title>Visualizador de Árvores</title>
+
+  <link rel="stylesheet" href="style.css" />
+
 </head>
 
 <body>
-    <header>
-        <h1>Visualizador de Estruturas</h1>
-        <nav>
-            <a href="#" id="menu-arvores">Árvores</a>
-            <a href="#" id="menu-grafos">Grafos</a>
-        </nav>
-    </header>
+  <header>
+    <h1>Visualizador de Estruturas</h1>
+    <nav>
+      <a href="#" id="menu-arvores">Árvores</a>
+      <a href="#" id="menu-grafos">Grafos</a>
+    </nav>
+  </header>
 
-    <div class="inputs-container">
-        <input type="number" id="valorInserir" placeholder="Valor para inserir">
-        <input type="text" id="localInsercao" placeholder="Local (pai)">
-        <button id="btnInserir">Inserir</button>
+  <div class="inputs-container">
+    <input type="number" id="valorInserir" placeholder="Valor que deseja inserir">
+    <input type="text" id="localInsercao" placeholder="Local (pai)">
 
-        <input type="number" id="valorRemover" placeholder="Valor para remover">
-        <button id="btnRemover">Remover</button>
-    </div>
+    <input type="number" id="posicaoInsercao" placeholder="Posição (1-3)" min="1" max="3">
+
+    <button id="btnInserir">Inserir</button>
+
+    <input type="number" id="valorRemover" placeholder="Valor que deseja remover">
+    <button id="btnRemover">Remover</button>
+
+  </div>
+
+  <div class="tree-wrapper">
+    <svg id="connectorLayer" class="connector-layer" xmlns="http://www.w3.org/2000/svg"></svg>
 
     <div class="tree-container" id="treeArea">
-        (A árvore será exibida aqui)
+      <p class="empty-msg">(A árvore está vazia)</p>
     </div>
+
+    <div class="zoom-controls">
+      <button id="btnZoomIn" title="Aumentar Zoom">+</button>
+      <button id="btnZoomOut" title="Diminuir Zoom">-</button>
+      <button id="btnResetZoom" title="Resetar Zoom">100%</button>
+    </div>
+
+  </div>
+
+  <script type="module" src="./js/Main.js"></script>
+
 </body>
 
 </html>
