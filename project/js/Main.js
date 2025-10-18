@@ -34,9 +34,6 @@ function applyZoom() {
 
     treeArea.style.transform = transform;
     treeArea.style.transformOrigin = origin;
-
-    connectorLayer.style.transform = transform;
-    connectorLayer.style.transformOrigin = origin;
 }
 
 btnZoomIn.addEventListener('click', () => {

@@ -69,7 +69,8 @@ button {
 button:hover {
   background-color: #9890d8;
 }
- /* CSS DA ÁRVORE */
+
+/* CSS DA ÁRVORE */
 .tree-wrapper {
   position: relative;
   margin: 30px;
@@ -109,7 +110,7 @@ button:hover {
   vertical-align: top;
   position: relative;
   padding: 6px 10px;
-  margin: 0 20px;
+  margin: 0 4px;
 }
 
 /* aparência da etiqueta do nó */
@@ -130,10 +131,8 @@ button:hover {
 .children {
   display: flex;
   justify-content: space-evenly;
-  gap: 10px;
-  margin-top: 28px;
+  margin-top: 20px;
 }
-
 
 /* mensagem quando está vazia */
 .empty-msg {
@@ -163,7 +162,7 @@ button:hover {
   height: 30px;
   font-size: 16px;
   font-weight: bold;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .zoom-controls button:hover {
