@@ -19,19 +19,23 @@ const btnZoomIn = document.getElementById('btnZoomIn');
 const btnZoomOut = document.getElementById('btnZoomOut');
 const btnResetZoom = document.getElementById('btnResetZoom');
 
+// Seletores do container de passos
+const passosContainer = document.querySelector('.passos-slider');
+const passoTexto = document.getElementById('passoTexto');
+const btnPrevPasso = document.getElementById('prevPasso');
+const btnNextPasso = document.getElementById('nextPasso');
+
 let currentZoom = 1.0;
 const zoomStep = 0.1;
 const minZoom = 0.3;
 const maxZoom = 2.0;
+let currentPasso = 0;
 
 /* Função para aplicar o zoom */
 function applyZoom() {
-
     currentZoom = Math.max(minZoom, Math.min(maxZoom, currentZoom));
-
     const transform = `scale(${currentZoom})`;
     const origin = 'top center';
-
     treeArea.style.transform = transform;
     treeArea.style.transformOrigin = origin;
 }
@@ -81,6 +85,7 @@ btnInserir.addEventListener('click', () => {
 
     if (!arvore.raiz) {
         arvore.raiz = new No(valor);
+        arvore.passos.push(`Criada a raiz ${valor}`);
     } else {
         let paiValor;
         if (localStr) {
@@ -89,7 +94,6 @@ btnInserir.addEventListener('click', () => {
                 alert('O local (pai) deve ser um número.');
                 return;
             }
-
         } else {
             paiValor = arvore.raiz.valor;
         }
@@ -100,11 +104,9 @@ btnInserir.addEventListener('click', () => {
                 alert('Posição inválida. Insira 1, 2 ou 3.');
                 return;
             }
-
             if (!arvore.inserir(paiValor, valor, pos)) {
-                alert(`Falha ao inserir nó na posição ${pos}. Verifique se o nó pai existe e se a posição está livre.`);
+                alert(`Falha ao inserir nó na posição ${pos}.`);
             }
-
         } else {
             let inserido = false;
             for (let pos = 1; pos <= 3; pos++) {
@@ -114,7 +116,7 @@ btnInserir.addEventListener('click', () => {
                 }
             }
             if (!inserido) {
-                alert('Falha ao inserir nó. Verifique se o nó pai existe e se há posição disponível (1..3).');
+                alert('Falha ao inserir nó. Verifique se o nó pai existe e se há posição disponível.');
             }
         }
     }
@@ -123,6 +125,7 @@ btnInserir.addEventListener('click', () => {
     localInsercao.value = '';
     posicaoInsercao.value = '';
     renderizarArvore();
+    mostrarPassos();
 });
 
 btnRemover.addEventListener('click', () => {
@@ -147,6 +150,7 @@ btnRemover.addEventListener('click', () => {
 
     valorRemover.value = '';
     renderizarArvore();
+    mostrarPassos();
 });
 
 function renderizarArvore() {
@@ -158,34 +162,24 @@ function renderizarArvore() {
         p.className = 'empty-msg';
         p.textContent = '(A árvore está vazia)';
         treeArea.appendChild(p);
-
-        // Reseta o tamanho do SVG
         connectorLayer.style.width = '100%';
         connectorLayer.style.height = '100%';
         return;
     }
 
-    // 1. Aplica o zoom (para garantir que o treeArea já esteja com o zoom correto)
     applyZoom();
 
-    // 2. Constrói o DOM
     const raizEl = criarElementoNo(arvore.raiz);
     treeArea.appendChild(raizEl);
 
-    // 3. Espera o DOM ser desenhado
     requestAnimationFrame(() => {
-        // 4. Mede o tamanho real do CONTEÚDO (scrollWidth)
         const contentWidth = treeArea.scrollWidth;
         const contentHeight = treeArea.scrollHeight;
-
         const wrapperWidth = treeWrapper.clientWidth;
         const wrapperHeight = treeWrapper.clientHeight;
 
-        // 5. Ajusta o TAMANHO do SVG para ser tão grande quanto o conteúdo
         connectorLayer.style.width = `${Math.max(contentWidth, wrapperWidth)}px`;
         connectorLayer.style.height = `${Math.max(contentHeight, wrapperHeight)}px`;
-
-        // 6. SÓ AGORA desenha as conexões
         desenharConexoes(raizEl);
     });
 }
@@ -250,5 +244,49 @@ function desenharConexoes(rootEl) {
         });
     });
 }
+
+function mostrarPassos() {
+    if (arvore.passos.length === 0) {
+        passoTexto.textContent = '(Nenhum passo disponível)';
+        return;
+    }
+
+    currentPasso = 0;
+    atualizarPasso();
+}
+
+function atualizarPasso() {
+    passoTexto.textContent = arvore.passos[currentPasso];
+
+    const nos = treeArea.querySelectorAll('.node');
+    nos.forEach(node => node.classList.remove('ativo'));
+
+    const texto = arvore.passos[currentPasso];
+    const match = texto.match(/nó\s+(\d+)/i);
+
+    if (match) {
+        const valorNo = match[1];
+        const noEl = treeArea.querySelector(`.node[data-valor="${valorNo}"]`);
+        if (noEl) {
+            noEl.classList.add('ativo');
+        }
+    }
+}
+
+btnPrevPasso.addEventListener('click', () => {
+    if (arvore.passos.length === 0) return;
+    if (currentPasso > 0) {
+        currentPasso--;
+        atualizarPasso();
+    }
+});
+
+btnNextPasso.addEventListener('click', () => {
+    if (arvore.passos.length === 0) return;
+    if (currentPasso < arvore.passos.length - 1) {
+        currentPasso++;
+        atualizarPasso();
+    }
+});
 
 renderizarArvore();
