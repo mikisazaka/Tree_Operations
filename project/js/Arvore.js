@@ -51,7 +51,7 @@ export class Arvore {
     }
 
     // Nó pai é substituído pelo nó filho da esquerda
-    // Recebe como parâmetro o nó pai e o valor do nó a ser removido
+    // Recebe como parâmetro a raiz e o valor do nó a ser removido
     remover(valor, no) {
         // Reiniciamos os passos no início da chamada principal
         if (no === this.raiz) {
@@ -91,7 +91,6 @@ export class Arvore {
         for (let i = 0; i < no.filhos.length; i++) {
             const filho = no.filhos[i];
 
-            // --- CORREÇÃO IMPORTANTE AQUI ---
             // Só processa se o filho não for null
             if (filho) {
                 this.passos.push(`Visitando o nó filho ${filho.valor} do pai ${no.valor}`);
