@@ -11,7 +11,6 @@ export class Arvore {
         const noPai = this.buscar(this.raiz, valorPai);
 
         if (noPai !== null) {
-            this.passos.push('Nó pai encontrado!');
             const novoNo = new No(valor);
 
             if (noPai.adicionarFilho(novoNo, posicao)) {
@@ -29,7 +28,6 @@ export class Arvore {
     // Inicia com nó raiz como parâmetro
     buscar(no, valor) {
         if (no === null) {
-            this.passos.push(`Nó ${valor} não encontrado`);
             return null;
         }
 

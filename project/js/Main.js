@@ -296,7 +296,7 @@ function atualizarPasso() {
     nos.forEach(node => node.classList.remove('ativo'));
 
     const texto = arvore.passos[currentPasso];
-    const match = texto?.match(/nó\s+(\d+)/i);
+    const match = texto?.match(/(\d+)(?!.*\d)/);
     if (match) {
         const valorNo = match[1];
         const noEl = treeArea.querySelector(`.node[data-valor="${valorNo}"]`);
