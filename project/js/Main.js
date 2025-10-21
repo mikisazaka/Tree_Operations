@@ -69,6 +69,7 @@ btnResetZoom.addEventListener('click', () => {
     });
 });
 
+// Cria uma cópia da árvore para armazenar snapshots
 function clonarNo(no) {
     if (!no) return null;
     const novoNo = new No(no.valor);
@@ -94,6 +95,7 @@ btnInserir.addEventListener('click', () => {
         return;
     }
 
+    // Restaura a árvore para o último snapshot para mostrar o estado atual da árvore
     if (arvore.snapshotsPassos.length > 0) {
         arvore.raiz = clonarNo(arvore.snapshotsPassos[arvore.snapshotsPassos.length - 1]);
     }
@@ -117,7 +119,6 @@ btnInserir.addEventListener('click', () => {
             paiValor = arvore.raiz.valor;
         }
 
-        arvore.passos.push(`Preparando inserção do nó ${valor}`);
         arvore.snapshotsPassos.push(clonarNo(arvore.raiz));
 
         let inserido = false;
@@ -143,8 +144,7 @@ btnInserir.addEventListener('click', () => {
             }
         }
 
-        arvore.passos.push(`Inserido nó ${valor}`);
-        arvore.snapshotsPassos.push(clonarNo(arvore.raiz));
+        arvore.snapshotsPassos.push(clonarNo(arvore.raiz)); // adiciona um novo estado à lista de snapshots
     }
 
     valorInserir.value = '';
@@ -170,6 +170,7 @@ btnRemover.addEventListener('click', () => {
         return;
     }
 
+    // Restaura a árvore para o último snapshot para mostrar o estado atual da árvore
     if (arvore.snapshotsPassos.length > 0) {
         arvore.raiz = clonarNo(arvore.snapshotsPassos[arvore.snapshotsPassos.length - 1]);
     }
@@ -177,12 +178,8 @@ btnRemover.addEventListener('click', () => {
     arvore.passos = [];
     arvore.snapshotsPassos = [];
 
-    arvore.passos.push(`Preparando remoção do nó ${valor}`);
     arvore.snapshotsPassos.push(clonarNo(arvore.raiz));
-
-    const sucesso = arvore.remover(valor, arvore.raiz);
-
-    arvore.passos.push(sucesso ? `Removido nó ${valor}` : `Falha ao remover nó ${valor}`);
+    arvore.remover(valor, arvore.raiz);
     arvore.snapshotsPassos.push(clonarNo(arvore.raiz));
 
     valorRemover.value = '';
@@ -287,16 +284,24 @@ function desenharConexoes(rootEl) {
 function atualizarPasso() {
     passoTexto.textContent = arvore.passos[currentPasso] || '(Nenhum passo)';
 
+    // Atualiza árvore com snapshot do passo atual
     if (arvore.snapshotsPassos[currentPasso]) {
         arvore.raiz = clonarNo(arvore.snapshotsPassos[currentPasso]);
         renderizarArvore();
     }
 
+    // Remove destaque de todos os nós
     const nos = treeArea.querySelectorAll('.node');
     nos.forEach(node => node.classList.remove('ativo'));
 
+    // Destaca nó relacionado ao passo atual com borda
     const texto = arvore.passos[currentPasso];
-    const match = texto?.match(/(\d+)(?!.*\d)/);
+    // Regex para capturar o número do nó que deve ser destacado
+    // (\d+) -> Captura um ou mais dígitos consecutivos como grupo
+    // match[1] conterá o primeiro número encontrado no texto
+    const match = texto?.match(/(\d+)/);
+
+
     if (match) {
         const valorNo = match[1];
         const noEl = treeArea.querySelector(`.node[data-valor="${valorNo}"]`);
