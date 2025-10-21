@@ -31,6 +31,8 @@ const minZoom = 0.3;
 const maxZoom = 2.0;
 let currentPasso = 0;
 
+arvore.snapshotsPassos = [];
+
 /* Função para aplicar o zoom */
 function applyZoom() {
     currentZoom = Math.max(minZoom, Math.min(maxZoom, currentZoom));
@@ -67,6 +69,15 @@ btnResetZoom.addEventListener('click', () => {
     });
 });
 
+function clonarNo(no) {
+    if (!no) return null;
+    const novoNo = new No(no.valor);
+    no.filhos.forEach(filho => {
+        if (filho) novoNo.adicionarFilho(clonarNo(filho), no.filhos.indexOf(filho) + 1);
+    });
+    return novoNo;
+}
+
 btnInserir.addEventListener('click', () => {
     const valorStr = valorInserir.value?.trim();
     const localStr = localInsercao.value?.trim();
@@ -83,9 +94,17 @@ btnInserir.addEventListener('click', () => {
         return;
     }
 
+    if (arvore.snapshotsPassos.length > 0) {
+        arvore.raiz = clonarNo(arvore.snapshotsPassos[arvore.snapshotsPassos.length - 1]);
+    }
+
+    arvore.passos = [];
+    arvore.snapshotsPassos = [];
+
     if (!arvore.raiz) {
         arvore.raiz = new No(valor);
         arvore.passos.push(`Criada a raiz ${valor}`);
+        arvore.snapshotsPassos.push(clonarNo(arvore.raiz));
     } else {
         let paiValor;
         if (localStr) {
@@ -98,6 +117,10 @@ btnInserir.addEventListener('click', () => {
             paiValor = arvore.raiz.valor;
         }
 
+        arvore.passos.push(`Preparando inserção do nó ${valor}`);
+        arvore.snapshotsPassos.push(clonarNo(arvore.raiz));
+
+        let inserido = false;
         if (posicaoStr) {
             const pos = parseInt(posicaoStr, 10);
             if (isNaN(pos) || pos < 1 || pos > 3) {
@@ -119,11 +142,16 @@ btnInserir.addEventListener('click', () => {
                 alert('Falha ao inserir nó. Verifique se o nó pai existe e se há posição disponível.');
             }
         }
+
+        arvore.passos.push(`Inserido nó ${valor}`);
+        arvore.snapshotsPassos.push(clonarNo(arvore.raiz));
     }
 
     valorInserir.value = '';
     localInsercao.value = '';
     posicaoInsercao.value = '';
+    currentPasso = arvore.passos.length - 1;
+    atualizarPasso();
     renderizarArvore();
     mostrarPassos();
 });
@@ -142,13 +170,24 @@ btnRemover.addEventListener('click', () => {
         return;
     }
 
+    if (arvore.snapshotsPassos.length > 0) {
+        arvore.raiz = clonarNo(arvore.snapshotsPassos[arvore.snapshotsPassos.length - 1]);
+    }
+    
+    arvore.passos = [];
+    arvore.snapshotsPassos = [];
+
+    arvore.passos.push(`Preparando remoção do nó ${valor}`);
+    arvore.snapshotsPassos.push(clonarNo(arvore.raiz));
+
     const sucesso = arvore.remover(valor, arvore.raiz);
 
-    if (!sucesso) {
-        alert('Nó não encontrado ou remoção falhou.');
-    }
+    arvore.passos.push(sucesso ? `Removido nó ${valor}` : `Falha ao remover nó ${valor}`);
+    arvore.snapshotsPassos.push(clonarNo(arvore.raiz));
 
     valorRemover.value = '';
+    currentPasso = arvore.passos.length - 1;
+    atualizarPasso();
     renderizarArvore();
     mostrarPassos();
 });
@@ -245,36 +284,30 @@ function desenharConexoes(rootEl) {
     });
 }
 
-function mostrarPassos() {
-    if (arvore.passos.length === 0) {
-        passoTexto.textContent = '(Nenhum passo disponível)';
-        return;
-    }
-
-    currentPasso = 0;
-    atualizarPasso();
-}
-
 function atualizarPasso() {
-    passoTexto.textContent = arvore.passos[currentPasso];
+    passoTexto.textContent = arvore.passos[currentPasso] || '(Nenhum passo)';
+
+    if (arvore.snapshotsPassos[currentPasso]) {
+        arvore.raiz = clonarNo(arvore.snapshotsPassos[currentPasso]);
+        renderizarArvore();
+    }
 
     const nos = treeArea.querySelectorAll('.node');
     nos.forEach(node => node.classList.remove('ativo'));
 
     const texto = arvore.passos[currentPasso];
-    const match = texto.match(/nó\s+(\d+)/i);
-
+    const match = texto?.match(/nó\s+(\d+)/i);
     if (match) {
         const valorNo = match[1];
         const noEl = treeArea.querySelector(`.node[data-valor="${valorNo}"]`);
-        if (noEl) {
-            noEl.classList.add('ativo');
-        }
+        if (noEl) noEl.classList.add('ativo');
     }
+
+    btnPrevPasso.disabled = currentPasso === 0;
+    btnNextPasso.disabled = currentPasso === arvore.passos.length - 1;
 }
 
 btnPrevPasso.addEventListener('click', () => {
-    if (arvore.passos.length === 0) return;
     if (currentPasso > 0) {
         currentPasso--;
         atualizarPasso();
@@ -282,7 +315,6 @@ btnPrevPasso.addEventListener('click', () => {
 });
 
 btnNextPasso.addEventListener('click', () => {
-    if (arvore.passos.length === 0) return;
     if (currentPasso < arvore.passos.length - 1) {
         currentPasso++;
         atualizarPasso();
