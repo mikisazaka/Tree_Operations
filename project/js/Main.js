@@ -69,16 +69,6 @@ btnResetZoom.addEventListener('click', () => {
     });
 });
 
-// Cria uma cópia da árvore para armazenar snapshots
-function clonarNo(no) {
-    if (!no) return null;
-    const novoNo = new No(no.valor);
-    no.filhos.forEach(filho => {
-        if (filho) novoNo.adicionarFilho(clonarNo(filho), no.filhos.indexOf(filho) + 1);
-    });
-    return novoNo;
-}
-
 btnInserir.addEventListener('click', () => {
     const valorStr = valorInserir.value?.trim();
     const localStr = localInsercao.value?.trim();
@@ -95,18 +85,8 @@ btnInserir.addEventListener('click', () => {
         return;
     }
 
-    // Restaura a árvore para o último snapshot para mostrar o estado atual da árvore
-    if (arvore.snapshotsPassos.length > 0) {
-        arvore.raiz = clonarNo(arvore.snapshotsPassos[arvore.snapshotsPassos.length - 1]);
-    }
-
-    arvore.passos = [];
-    arvore.snapshotsPassos = [];
-
     if (!arvore.raiz) {
         arvore.raiz = new No(valor);
-        arvore.passos.push(`Criada a raiz ${valor}`);
-        arvore.snapshotsPassos.push(clonarNo(arvore.raiz));
     } else {
         let paiValor;
         if (localStr) {
@@ -118,8 +98,6 @@ btnInserir.addEventListener('click', () => {
         } else {
             paiValor = arvore.raiz.valor;
         }
-
-        arvore.snapshotsPassos.push(clonarNo(arvore.raiz));
 
         let inserido = false;
         if (posicaoStr) {
@@ -143,8 +121,6 @@ btnInserir.addEventListener('click', () => {
                 alert('Falha ao inserir nó. Verifique se o nó pai existe e se há posição disponível.');
             }
         }
-
-        arvore.snapshotsPassos.push(clonarNo(arvore.raiz)); // adiciona um novo estado à lista de snapshots
     }
 
     valorInserir.value = '';
@@ -170,17 +146,7 @@ btnRemover.addEventListener('click', () => {
         return;
     }
 
-    // Restaura a árvore para o último snapshot para mostrar o estado atual da árvore
-    if (arvore.snapshotsPassos.length > 0) {
-        arvore.raiz = clonarNo(arvore.snapshotsPassos[arvore.snapshotsPassos.length - 1]);
-    }
-    
-    arvore.passos = [];
-    arvore.snapshotsPassos = [];
-
-    arvore.snapshotsPassos.push(clonarNo(arvore.raiz));
     arvore.remover(valor, arvore.raiz);
-    arvore.snapshotsPassos.push(clonarNo(arvore.raiz));
 
     valorRemover.value = '';
     currentPasso = arvore.passos.length - 1;
@@ -284,23 +250,19 @@ function desenharConexoes(rootEl) {
 function atualizarPasso() {
     passoTexto.textContent = arvore.passos[currentPasso] || '(Nenhum passo)';
 
-    // Atualiza árvore com snapshot do passo atual
-    if (arvore.snapshotsPassos[currentPasso]) {
-        arvore.raiz = clonarNo(arvore.snapshotsPassos[currentPasso]);
-        renderizarArvore();
-    }
-
     // Remove destaque de todos os nós
     const nos = treeArea.querySelectorAll('.node');
     nos.forEach(node => node.classList.remove('ativo'));
 
     // Destaca nó relacionado ao passo atual com borda
     const texto = arvore.passos[currentPasso];
-    // Regex para capturar o número do nó que deve ser destacado
-    // (\d+) -> Captura um ou mais dígitos consecutivos como grupo
-    // match[1] conterá o primeiro número encontrado no texto
-    const match = texto?.match(/(\d+)/);
 
+    //Regex para capturar o nó que será destacado
+    // /Nó\s+\d+\s+substituído\s+por\s+(\d+)/i (nó substituído por outro)
+    // /nó\s+filho\s+(\d+)/i (visitando o nó filho do pai)
+    // /nó\s+(\d+)/i
+    const match = texto?.match(/Nó\s+\d+\s+substituído\s+por\s+(\d+)/i) || 
+        texto?.match(/nó\s+filho\s+(\d+)/i) || texto?.match(/nó\s+(\d+)/i);
 
     if (match) {
         const valorNo = match[1];
