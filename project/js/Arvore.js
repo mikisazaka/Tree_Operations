@@ -64,21 +64,47 @@ export class Arvore {
         // Caso 1: Removendo a raiz
         if (no === this.raiz && no.valor === valor) {
             this.passos.push(`Removendo a raiz ${valor}`);
-            // Encontra o primeiro filho válido para ser a nova raiz
+
             const novaRaiz = no.filhos.find(f => f !== null) || null;
 
             if (novaRaiz === null) {
                 this.raiz = null;
                 this.passos.push(`Árvore novamente vazia`);
             } else {
-                // Remove a nova raiz da lista de filhos para não ser adicionada a si mesma
                 const outrosFilhos = no.filhos.filter(f => f !== novaRaiz && f !== null);
-                // Adiciona os filhos restantes aos filhos da nova raiz (encontrando slots livres)
+
                 outrosFilhos.forEach(outroFilho => {
+                    let adicionado = false;
+                    // Tenta adicionar na novaRaiz
                     for (let i = 1; i <= 3; i++) {
-                        if (novaRaiz.adicionarFilho(outroFilho, i)) break;
+                        if (novaRaiz.adicionarFilho(outroFilho, i)) {
+                            adicionado = true;
+                            break;
+                        }
+                    }
+
+                    // Se novaRaiz estava cheia
+                    if (!adicionado) {
+                        this.passos.push(`Nó ${novaRaiz.valor} está cheio. Tentando realocar ${outroFilho.valor} mais abaixo.`);
+
+                        // Tenta adicionar em um dos filhos da novaRaiz
+                        for (const filhoDaNovaRaiz of novaRaiz.filhos) {
+                            if (filhoDaNovaRaiz && !adicionado) {
+                                for (let i = 1; i <= 3; i++) {
+                                    if (filhoDaNovaRaiz.adicionarFilho(outroFilho, i)) {
+                                        adicionado = true;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    if (!adicionado) {
+                        this.passos.push(`AVISO: Não foi possível realocar o nó ${outroFilho.valor}. Nó descartado.`);
                     }
                 });
+
                 this.raiz = novaRaiz;
                 this.passos.push(`Novo nó raiz é ${novaRaiz.valor}. Os demais filhos foram realocados.`);
             }
