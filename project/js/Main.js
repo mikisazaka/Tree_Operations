@@ -220,10 +220,11 @@ function criarElementoNo(no) {
 
 function desenharConexoes(rootEl) {
     if (!rootEl) return;
-    const nodes = rootEl.querySelectorAll('.node');
+
     const layerBox = connectorLayer.getBoundingClientRect();
 
-    nodes.forEach(nodeEl => {
+    // Inclui a raiz no processamento
+    const processarConexoes = (nodeEl) => {
         const filhos = nodeEl.querySelectorAll(':scope > .children > .node');
         if (!filhos || filhos.length === 0) return;
 
@@ -243,8 +244,13 @@ function desenharConexoes(rootEl) {
             path.setAttribute('fill', 'transparent');
             path.setAttribute('stroke-width', '2');
             connectorLayer.appendChild(path);
+
+            // Recursivamente desenha os filhos
+            processarConexoes(filhoEl);
         });
-    });
+    };
+
+    processarConexoes(rootEl);
 }
 
 function atualizarPasso() {
