@@ -1,7 +1,5 @@
-# 🌲 Operações em Árvore - Estrutura de Dados Não Lineares
-Este é um sistema que realiza operações de inserção e deleção de nós de uma árvore como parte da atividade avaliativa
-da matéria de Estrutura de Dados Não Lineares. O sistema possui uma interface para visualização dos métodos citados com passo a passo
-da navegação realizada na lógica do projeto.
+# 🌲 Operações em Árvore e Grafo - Estrutura de Dados Não Lineares
+Este é um sistema que possui duas opções de estruturas para realizar operações: árvore e grafo. No menu de árvore, é possível realizar operações de inserção e deleção de nós, já no menu de grafo, é possível realizar a construção de um grafo a partir de uma matriz de adjacência, de modo a calcular o caminho mínimo. Além disso, o sistema possui uma interface para visualização dos métodos citados como parte da atividade avaliativa da matéria de Estrutura de Dados Não Lineares.
 
 <br>
 
