@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Visualizador de Grafo</title>
+
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="grafos.css" />
+</head>
+
+<body>
+
+  <header>
+    <h1>Visualizador de Estruturas</h1>
+    <nav>
+      <a href="index.html" id="menu-arvores">Árvores</a>
+      <a href="grafos.html" id="menu-grafos">Grafos</a>
+    </nav>
+  </header>
+
+  <div class="inputs-container">
+    <input type="number" id="numVertices" placeholder="Número de vértices" min="1" value="4">
+    <button id="btnGerar">Gerar Matriz</button>
+    <button id="btnExportar">Enviar Matriz</button>
+  </div>
+
+  <div id="matriz-wrapper">
+    <div id="matriz-container" class="matriz-container">
+      <p class="empty-grafo">Nenhuma matriz gerada ainda.</p>
+    </div>
+  </div>
+
+  <script type="module" src="./js/Main.js"></script>
+  <script src="./js/MatrizAdjacencia.js"></script>
+
+</body>
+
+</html>

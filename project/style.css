@@ -277,3 +277,66 @@ button:hover {
 .zoom-controls button:hover {
   background-color: #e0e0e0;
 }
+
+/*CSS DOS GRAFOS*/
+/* WRAPPER PRINCIPAL */
+#matriz-wrapper {
+  margin: 25px auto;
+  width: 90%;
+  max-width: 900px;
+  background: white;
+  border: 1px dashed #d0c9ff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+
+/* Mensagem inicial */
+.empty-grafo {
+  color: #777;
+  text-align: center;
+  padding: 20px;
+  font-size: 18px;
+}
+
+/* CONTAINER ONDE A TABELA SERÁ GERADA */
+.matriz-container {
+  overflow-x: auto;
+  margin-top: 10px;
+}
+
+/* TABELA */
+#matriz-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: center;
+  margin-top: 10px;
+}
+
+#matriz-table th {
+  background: #b5aef5;
+  color: white;
+  padding: 8px;
+  border: 1px solid #dcd4ff;
+  font-weight: bold;
+}
+
+#matriz-table td {
+  border: 1px solid #c9c4ff;
+  padding: 6px;
+  background: #faf9ff;
+}
+
+/* Inputs dentro da matriz */
+#matriz-table input {
+  width: 55px;
+  padding: 4px;
+  text-align: center;
+  border: 1px solid #b5aef5;
+  border-radius: 4px;
+}
+
+#matriz-table input.invalid {
+  border-color: red;
+  background: #ffe0e0;
+}
