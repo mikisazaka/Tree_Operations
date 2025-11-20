@@ -31,7 +31,21 @@
   </div>
 
   <!--Area para desenhar o grafo gerado por meio da matriz de adjacência-->
-  <canvas id="grafoCanvas" width="800" height="500"></canvas>
+  <div class="canvas-wrapper">
+    <canvas id="grafoCanvas" width="800" height="500"></canvas>
+    <canvas id="caminhoCanvas" width="800" height="500"></canvas>
+  </div>
+
+  <!-- Passo a passo para a MST / Caminho Mínimo -->
+  <div class="passos-slider" id="passos-grafo">
+    <button id="prevPassoGrafo">⟨</button>
+    <div id="passoTextoGrafo" class="passo-texto">(Nenhum passo)</div>
+    <button id="nextPassoGrafo">⟩</button>
+  </div>
+
+  <div id="botao-caminho-wrapper" class="hidden">
+    <button id="btnCaminhoMinimo">Gerar Caminho Mínimo</button>
+  </div>
 
   <script type="module" src="./js/GrafoMain.js"></script>
   <script src="./js/MatrizAdjacencia.js"></script>
