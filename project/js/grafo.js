@@ -1,6 +1,6 @@
-export function desenharGrafo(matrix) {
+export function desenharGrafo(matrix, canvasId, highlight = null) {
   // Pega o canvas onde o grafo será desenhado
-  const canvas = document.getElementById("grafoCanvas");
+  const canvas = document.getElementById(canvasId);
   const ctx = canvas.getContext("2d"); // Ferramenta que permite desenhar no canvas
 
   const n = matrix.length; // Quantidade de vértices (linhas da matriz)
@@ -47,6 +47,23 @@ export function desenharGrafo(matrix) {
         ctx.lineTo(v2.x, v2.y);          // Vai até o vértice 2
         ctx.strokeStyle = "#0f0f0fff";   // Cor da linha
         ctx.lineWidth = 2;
+
+        // Verifica se a aresta é o highlight atual
+        const isHighlight =
+          highlight &&
+          (
+            (highlight.u === i && highlight.v === j) ||
+            (highlight.u === j && highlight.v === i)
+          );
+
+        // Configura cor da linha dependendo do highlight
+        ctx.strokeStyle = isHighlight ? "red" : "#0f0f0fff";
+        ctx.lineWidth = isHighlight ? 4 : 2;
+
+        // Desenha a linha da aresta
+        ctx.beginPath();
+        ctx.moveTo(v1.x, v1.y);
+        ctx.lineTo(v2.x, v2.y);
         ctx.stroke();
 
         // Escreve o peso no meio da linha
@@ -92,13 +109,30 @@ export function desenharGrafo(matrix) {
 
   // DESENHAR OS VÉRTICES
   for (const v of vertices) {
-    // Desenha o círculo do vértice
+    let isNodeHighlight = false;
+
+    // Verifica se o vértice faz parte da aresta destacada
+    if (highlight) {
+      if (highlight.u === v.index || highlight.v === v.index) {
+        isNodeHighlight = true;
+      }
+    }
+
+    // Estilo do vértice dependendo do highlight
     ctx.beginPath();
     ctx.arc(v.x, v.y, radius, 0, Math.PI * 2);
-    ctx.fillStyle = "#9890d8";
+
+    if (isNodeHighlight) {
+      ctx.fillStyle = "#ff6b6b";  // Fundo vermelho claro
+      ctx.strokeStyle = "red";    // Borda vermelha
+      ctx.lineWidth = 4;
+    } else {
+      ctx.fillStyle = "#9890d8";  // Fundo normal
+      ctx.strokeStyle = "#481253";
+      ctx.lineWidth = 3;
+    }
+
     ctx.fill();
-    ctx.strokeStyle = "#481253";
-    ctx.lineWidth = 3;
     ctx.stroke();
 
     // Desenha a letra dentro do círculo (A, B, C…)

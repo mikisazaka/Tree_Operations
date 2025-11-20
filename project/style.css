@@ -299,6 +299,11 @@ button:hover {
   font-size: 18px;
 }
 
+/* CLASSE PARA ESCONDER ELEMENTOS */
+.hidden {
+  display: none !important;
+}
+
 /* CONTAINER ONDE A TABELA SERÁ GERADA */
 .matriz-container {
   overflow-x: auto;
@@ -339,4 +344,26 @@ button:hover {
 #matriz-table input.invalid {
   border-color: red;
   background: #ffe0e0;
+}
+
+/* BOTÃO DE CAMINHO MÍNIMO */
+#botao-caminho-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+#btnCaminhoMinimo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 10px;
+}
+
+/* WRAPPER DOS CANVAS */
+.canvas-wrapper {
+  display: flex;
+  justify-content: space-between; 
+  gap: 20px;                      
 }
